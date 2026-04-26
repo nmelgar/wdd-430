@@ -1,0 +1,20 @@
+ng version
+node -v
+
+Angular CLI (Command Line Interface)
+
+    Common commands:
+        Creating new projects: ng new
+        Serving the app: ng serve
+        Generating files: ng generate component/service/pipe/etc.
+        Building for production: ng build
+
+// create new project
+// routing not needed for simple apps
+ng new my-first-angular-app --no-strict --standalone false --routing false
+
+// navigate into project directory
+cd my-first-angular-app
+
+// serve the application
+ng serve -o

@@ -1,0 +1,13 @@
+package.json: project dependencies, packages, libraries,etc
+angular.json: angular CLI configuration, settings, build options,etc
+tsconfig.json: rules for typescript
+src:
+    -- main.ts -> entry point of the app
+    -- index.html -> main html
+    -- styles.css -> global styles
+    -- app -> 
+        -- app.componet.ts -> first component that loads
+        -- index.html -> previous file is injected here
+        -- app.routes.ts -> defines main navigation ( connects url to components )
+        -- app.html -> content of main page
+    -- public -> for static assets
