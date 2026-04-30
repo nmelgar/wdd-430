@@ -1,9 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './header';
+import { Contacts } from './contacts/contacts'
 
 @Component({
   selector: 'cms-root',
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet, 
+    HeaderComponent,
+    Contacts
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

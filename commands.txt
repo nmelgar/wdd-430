@@ -17,7 +17,8 @@ ng new my-first-angular-app --no-strict --standalone false --routing false
 cd my-first-angular-app
 
 // create new component
-ng generate component <component-name>
+ng generate component component-name --flat (in current folder)
+ng generate component component-name (in new folder)
 
 // serve the application
 ng serve -o
