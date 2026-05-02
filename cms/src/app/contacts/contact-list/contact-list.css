@@ -17,3 +17,18 @@
 .pull-right {
   float: right !important;
 }
+
+.list-group-item-heading {
+  font-size: 1.2em;
+  margin-top: 15px;
+}
+
+.img-responsive {
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
