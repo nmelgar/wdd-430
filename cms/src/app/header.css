@@ -1,3 +1,20 @@
 .navbar-header {
   cursor: pointer;
 }
+
+.navbar-nav .dropdown {
+  position: relative;
+}
+
+.navbar-nav .dropdown-menu {
+  right: 0;
+  left: auto;
+  max-width: calc(100vw - 1rem);
+}
+
+@media (max-width: 991px) {
+  .navbar-nav .dropdown-menu {
+    right: auto;
+    left: 0;
+  }
+}

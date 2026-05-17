@@ -1,6 +1,24 @@
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <span class="title">Document Detail</span>
+  <div class="panel-heading clearfix">
+    <span class="title">{{ document?.name }}</span>
+    <div class="pull-right">
+      <a class="btn btn-primary">View</a>
+      <a class="btn btn-info">Edit</a>
+      <a class="btn btn-danger">Delete</a>
+    </div>
   </div>
-  <div class="panel-body">Select a document to view details.</div>
+
+  <div class="panel-body">
+    <div class="row" style="margin-top: 15px">
+      <div class="col-xs-12">
+        <p style="font-size: 1.1em">
+          <strong>Description:</strong> {{ document?.description }}
+        </p>
+
+        <p style="font-size: 1.1em">
+          <strong>URL:</strong> {{ document?.url }}
+        </p>
+      </div>
+    </div>
+  </div>
 </div>

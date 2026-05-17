@@ -1,13 +1,15 @@
 .title {
-  font-size: 2rem;
   font-weight: bold;
+  font-size: 1.5rem;
+  vertical-align: middle;
 }
 
-.pad-left-right {
-  padding-left: 1rem;
-  padding-right: 1rem;
+.panel-heading {
+  padding: 10px 15px;
+  background-color: #f5f5f5;
 }
 
-.center-panel {
-  margin-top: 0.5rem;
+.pull-right {
+  margin-top: 5px;
+  float: right !important;
 }
