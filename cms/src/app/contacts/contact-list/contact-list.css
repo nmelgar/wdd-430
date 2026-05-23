@@ -32,3 +32,16 @@
   font-size: 24px;
   font-weight: bold;
 }
+
+.contact-section + .contact-section {
+  margin-top: 12px;
+}
+
+.course-divider {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  background-color: #fafafa;
+  font-weight: 600;
+  color: #444;
+}

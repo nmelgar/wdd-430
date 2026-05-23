@@ -1,7 +1,13 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Contact } from '../contacts.model';
 import { ContactItem } from '../contact-item/contact-item';
+import { ContactService } from '../contact.service';
+
+interface ContactSection {
+  title: string;
+  members: Contact[];
+}
 
 @Component({
   selector: 'cms-contact-list',
@@ -10,29 +16,26 @@ import { ContactItem } from '../contact-item/contact-item';
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.css',
 })
-export class ContactList {
-  @Output() selectedContactEvent = new EventEmitter<Contact>();
+export class ContactList implements OnInit {
+  contactSections: ContactSection[] = [];
 
-  contacts: Contact[] = [
-    new Contact(
-      '1',
-      'R. Kent Jackson',
-      'jacksonk@byui.edu',
-      '208-496-3771',
-      'assets/images/jacksonk.jpg',
-      [],
-    ),
-    new Contact(
-      '2',
-      'Rex Barzee',
-      'barzeer@byui.edu',
-      '208-496-3768',
-      'assets/images/barzeer.jpg',
-      [],
-    ),
-  ];
+  constructor(private contactService: ContactService) {}
+
+  ngOnInit(): void {
+    const contacts = this.contactService.getContacts();
+    const teamContacts = contacts.filter((contact: Contact) =>
+      Array.isArray(contact.group) && contact.group.length > 0,
+    );
+
+    this.contactSections = teamContacts.map((team: Contact) => ({
+      title: team.name,
+      members: [...team.group].sort((a: Contact, b: Contact) =>
+        a.name.localeCompare(b.name),
+      ),
+    }));
+  }
 
   onSelected(contact: Contact) {
-    this.selectedContactEvent.emit(contact);
+    this.contactService.contactSelectedEvent.emit(contact);
   }
 }

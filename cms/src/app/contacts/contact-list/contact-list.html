@@ -7,12 +7,15 @@
   </div>
 
   <div class="panel-body">
-    <div class="list-group">
-      <cms-contact-item
-        *ngFor="let contact of contacts"
-        [contact]="contact"
-        (click)="onSelected(contact)"
-      ></cms-contact-item>
+    <div *ngFor="let section of contactSections" class="contact-section">
+      <div class="course-divider">{{ section.title }}</div>
+      <div class="list-group">
+        <cms-contact-item
+          *ngFor="let contact of section.members"
+          [contact]="contact"
+          (click)="onSelected(contact)"
+        ></cms-contact-item>
+      </div>
     </div>
   </div>
 </div>
