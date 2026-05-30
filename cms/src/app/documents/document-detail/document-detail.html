@@ -2,9 +2,9 @@
   <div class="panel-heading clearfix">
     <span class="title">{{ document?.name }}</span>
     <div class="pull-right">
-      <a class="btn btn-primary">View</a>
-      <a class="btn btn-info">Edit</a>
-      <a class="btn btn-danger">Delete</a>
+      <a class="btn btn-primary" (click)="onView()">View</a>
+      <a class="btn btn-info" [routerLink]="['/documents', document?.id, 'edit']">Edit</a>
+      <a class="btn btn-danger" (click)="onDelete()">Delete</a>
     </div>
   </div>
 

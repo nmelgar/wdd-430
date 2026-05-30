@@ -2,7 +2,7 @@
   <div class="panel-heading clearfix">
     <span class="title">Contacts</span>
     <div class="pull-right">
-      <a class="btn btn-success">New Contact</a>
+      <a class="btn btn-success" [routerLink]="['new']">New Contact</a>
     </div>
   </div>
 
@@ -13,7 +13,6 @@
         <cms-contact-item
           *ngFor="let contact of section.members"
           [contact]="contact"
-          (click)="onSelected(contact)"
         ></cms-contact-item>
       </div>
     </div>

@@ -2,30 +2,30 @@
   <div class="panel-heading clearfix">
     <span class="title">Contact Details</span>
     <div class="pull-right">
-      <a class="btn btn-primary">Edit</a>
-      <a class="btn btn-danger">Delete</a>
+      <a class="btn btn-primary" [routerLink]="['/contacts', contact?.id, 'edit']">Edit</a>
+      <a class="btn btn-danger" (click)="onDelete()">Delete</a>
     </div>
   </div>
 
   <div class="panel-body">
     <div class="row">
       <div class="col-xs-12">
-        <h2 class="bold" style="margin-top: 0">{{ contact.name }}</h2>
+        <h2 class="bold" style="margin-top: 0">{{ contact?.name }}</h2>
       </div>
     </div>
     <div class="row" style="margin-top: 15px">
       <div class="col-xs-3">
         <img
-          [src]="contact.imageUrl"
-          alt="{{ contact.name }}"
+          [src]="contact?.imageUrl"
+          alt="{{ contact?.name }}"
           class="img-responsive"
           style="max-height: 100px; border: 1px solid #ddd; padding: 2px"
         />
       </div>
 
       <div class="col-xs-9">
-        <p style="font-size: 1.1em"><strong>Email:</strong> {{ contact.email }}</p>
-        <p style="font-size: 1.1em"><strong>Phone:</strong> {{ contact.phone }}</p>
+        <p style="font-size: 1.1em"><strong>Email:</strong> {{ contact?.email }}</p>
+        <p style="font-size: 1.1em"><strong>Phone:</strong> {{ contact?.phone }}</p>
       </div>
     </div>
   </div>

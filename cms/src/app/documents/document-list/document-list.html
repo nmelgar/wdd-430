@@ -2,7 +2,7 @@
   <div class="panel-heading clearfix">
     <span class="title">Documents</span>
     <div class="pull-right">
-      <a class="btn btn-success">Add Document</a>
+      <a class="btn btn-success" [routerLink]="['new']">Add Document</a>
     </div>
   </div>
 
@@ -11,7 +11,6 @@
       <cms-document-item
         *ngFor="let document of documents"
         [document]="document"
-        (click)="onSelectedDocument(document)"
       ></cms-document-item>
     </div>
   </div>

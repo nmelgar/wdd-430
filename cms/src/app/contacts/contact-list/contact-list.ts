@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Contact } from '../contacts.model';
 import { ContactItem } from '../contact-item/contact-item';
 import { ContactService } from '../contact.service';
@@ -12,7 +13,7 @@ interface ContactSection {
 @Component({
   selector: 'cms-contact-list',
   standalone: true,
-  imports: [CommonModule, ContactItem],
+  imports: [CommonModule, ContactItem, RouterLink],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.css',
 })
@@ -23,19 +24,23 @@ export class ContactList implements OnInit {
 
   ngOnInit(): void {
     const contacts = this.contactService.getContacts();
+    this.contactSections = this.buildSections(contacts);
+
+    this.contactService.contactChangedEvent.subscribe((updatedContacts: Contact[]) => {
+      this.contactSections = this.buildSections(updatedContacts);
+    });
+  }
+
+  private buildSections(contacts: Contact[]): ContactSection[] {
     const teamContacts = contacts.filter((contact: Contact) =>
       Array.isArray(contact.group) && contact.group.length > 0,
     );
 
-    this.contactSections = teamContacts.map((team: Contact) => ({
+    return teamContacts.map((team: Contact) => ({
       title: team.name,
       members: [...team.group].sort((a: Contact, b: Contact) =>
         a.name.localeCompare(b.name),
       ),
     }));
-  }
-
-  onSelected(contact: Contact) {
-    this.contactService.contactSelectedEvent.emit(contact);
   }
 }

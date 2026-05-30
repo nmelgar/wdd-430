@@ -7,6 +7,7 @@ import { MOCKCONTACTS } from './MOCKCONTACTS';
 })
 export class ContactService {
   contactSelectedEvent = new EventEmitter<Contact>();
+  contactChangedEvent = new EventEmitter<Contact[]>();
   contacts: Contact[] = [];
 
   constructor() {
@@ -25,5 +26,26 @@ export class ContactService {
     }
 
     return null;
+  }
+
+  deleteContact(contact: Contact) {
+    if (!contact) {
+      return;
+    }
+
+    this.contacts = this.contacts
+      .filter((existingContact: Contact) => existingContact.id !== contact.id)
+      .map((existingContact: Contact) => {
+        if (!Array.isArray(existingContact.group)) {
+          return existingContact;
+        }
+
+        existingContact.group = existingContact.group.filter(
+          (member: Contact) => member.id !== contact.id,
+        );
+        return existingContact;
+      });
+
+    this.contactChangedEvent.emit(this.contacts.slice());
   }
 }
