@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Contact } from '../contacts.model';
 import { ContactItem } from '../contact-item/contact-item';
 import { ContactService } from '../contact.service';
@@ -17,8 +18,9 @@ interface ContactSection {
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.css',
 })
-export class ContactList implements OnInit {
+export class ContactList implements OnInit, OnDestroy {
   contactSections: ContactSection[] = [];
+  subscription!: Subscription;
 
   constructor(private contactService: ContactService) {}
 
@@ -26,9 +28,15 @@ export class ContactList implements OnInit {
     const contacts = this.contactService.getContacts();
     this.contactSections = this.buildSections(contacts);
 
-    this.contactService.contactChangedEvent.subscribe((updatedContacts: Contact[]) => {
-      this.contactSections = this.buildSections(updatedContacts);
-    });
+    this.subscription = this.contactService.contactListChangedEvent.subscribe(
+      (updatedContacts: Contact[]) => {
+        this.contactSections = this.buildSections(updatedContacts);
+      },
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   private buildSections(contacts: Contact[]): ContactSection[] {
