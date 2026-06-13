@@ -1,0 +1,10 @@
+:host input.ng-invalid,
+:host textarea.ng-invalid {
+	border-color: #a94442;
+	background-color: #f2dede;
+}
+
+.btn-toolbar {
+	display: flex;
+	gap: 10px;
+}

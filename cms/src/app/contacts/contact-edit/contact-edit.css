@@ -1,0 +1,9 @@
+:host input.ng-invalid.ng-touched {
+	border-color: #a94442;
+	background-color: #f2dede;
+}
+
+.btn-toolbar {
+	display: flex;
+	gap: 10px;
+}
