@@ -1,7 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { Contact } from './contacts.model';
-import { MOCKCONTACTS } from './MOCKCONTACTS';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,14 +12,40 @@ export class ContactService {
   contactListChangedEvent = new Subject<Contact[]>();
   contacts: Contact[] = [];
   maxContactId = 0;
+  private firebaseUrl = environment.firebaseUrl + '/contacts.json';
 
-  constructor() {
-    this.contacts = MOCKCONTACTS;
-    this.maxContactId = this.getMaxId();
+  constructor(private http: HttpClient) {
+    this.contacts = [];
+    this.fetchContacts();
   }
 
   getContacts(): Contact[] {
     return this.contacts.slice();
+  }
+
+  refreshContacts(): void {
+    console.log('Refreshing contacts from Firebase');
+    this.fetchContacts();
+  }
+
+  private fetchContacts() {
+    console.log('Fetching contacts from:', this.firebaseUrl);
+    this.http.get<Contact[]>(this.firebaseUrl).subscribe(
+      (contacts: Contact[]) => {
+        console.log('Contacts fetched:', contacts);
+        this.contacts = contacts || [];
+        this.maxContactId = this.getMaxId();
+        this.contacts.sort((a: Contact, b: Contact) =>
+          a.name.localeCompare(b.name),
+        );
+        this.contactListChangedEvent.next(this.contacts.slice());
+      },
+      (error: any) => {
+        console.error('Error fetching contacts:', error);
+        console.error('Error status:', error.status);
+        console.error('Error message:', error.message);
+      },
+    );
   }
 
   getContact(id: string): Contact | null {
@@ -52,7 +79,7 @@ export class ContactService {
     this.maxContactId++;
     newContact.id = this.maxContactId.toString();
     this.contacts.push(newContact);
-    this.contactListChangedEvent.next(this.contacts.slice());
+    this.storeContacts();
   }
 
   updateContact(originalContact: Contact, newContact: Contact) {
@@ -67,7 +94,7 @@ export class ContactService {
 
     newContact.id = originalContact.id;
     this.contacts[pos] = newContact;
-    this.contactListChangedEvent.next(this.contacts.slice());
+    this.storeContacts();
   }
 
   deleteContact(contact: Contact) {
@@ -80,7 +107,28 @@ export class ContactService {
       return;
     }
 
+    console.log('Deleting contact:', contact);
     this.contacts.splice(pos, 1);
-    this.contactListChangedEvent.next(this.contacts.slice());
+    console.log('Contacts after deletion:', this.contacts);
+    this.storeContacts();
+  }
+
+  storeContacts() {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    console.log('Storing contacts to Firebase:', this.contacts);
+    this.http.put(this.firebaseUrl, this.contacts, { headers }).subscribe(
+      () => {
+        console.log('Contacts stored successfully');
+        this.contactListChangedEvent.next(this.contacts.slice());
+        console.log('ContactListChangedEvent emitted');
+      },
+      (error: any) => {
+        console.error('Error storing contacts:', error);
+      },
+    );
   }
 }
+

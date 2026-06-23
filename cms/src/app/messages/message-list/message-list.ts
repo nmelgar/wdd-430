@@ -18,8 +18,15 @@ export class MessageList implements OnInit {
   constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
+    console.log('MessageList ngOnInit started');
+    
+    this.messageService.refreshMessages();
+    
     this.messages = this.messageService.getMessages();
+    console.log('Initial messages from service:', this.messages);
+    
     this.messageService.messageChangedEvent.subscribe((messages: Message[]) => {
+      console.log('MessageChangedEvent received with messages:', messages);
       this.messages = messages;
     });
   }
