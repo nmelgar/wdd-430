@@ -1,7 +1,15 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Message } from './message.model';
-import { environment } from '../../environments/environment';
+
+type SenderShape = string | { id?: string | null } | null;
+
+interface MessageDto {
+  id: string;
+  subject: string;
+  msgText: string;
+  sender: SenderShape;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +17,7 @@ import { environment } from '../../environments/environment';
 export class MessageService {
   messageChangedEvent = new EventEmitter<Message[]>();
   messages: Message[] = [];
-  maxMessageId = 0;
-  private firebaseUrl = environment.firebaseUrl + '/messages.json';
+  private messagesUrl = 'http://localhost:3000/messages';
 
   constructor(private http: HttpClient) {
     this.messages = [];
@@ -22,17 +29,15 @@ export class MessageService {
   }
 
   refreshMessages(): void {
-    console.log('Refreshing messages from Firebase');
     this.fetchMessages();
   }
 
   private fetchMessages() {
-    console.log('Fetching messages from:', this.firebaseUrl);
-    this.http.get<Message[]>(this.firebaseUrl).subscribe(
-      (messages: Message[]) => {
-        console.log('Messages fetched:', messages);
-        this.messages = messages || [];
-        this.maxMessageId = this.getMaxId();
+    this.http
+      .get<{ message: string; messages: MessageDto[] }>(this.messagesUrl)
+      .subscribe(
+      (responseData) => {
+        this.messages = (responseData.messages || []).map((msg) => this.toMessage(msg));
         this.messages.sort((a: Message, b: Message) =>
           parseInt(b.id, 10) - parseInt(a.id, 10),
         );
@@ -40,8 +45,6 @@ export class MessageService {
       },
       (error: any) => {
         console.error('Error fetching messages:', error);
-        console.error('Error status:', error.status);
-        console.error('Error message:', error.message);
       },
     );
   }
@@ -56,42 +59,39 @@ export class MessageService {
     return null;
   }
 
-  getMaxId(): number {
-    let maxId = 0;
-
-    for (const message of this.messages) {
-      const currentId = parseInt(message.id, 10);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
+  addMessage(message: Message) {
+    if (!message) {
+      return;
     }
 
-    return maxId;
-  }
+    message.id = '';
 
-  addMessage(message: Message) {
-    this.maxMessageId++;
-    message.id = this.maxMessageId.toString();
-    this.messages.push(message);
-    this.storeMessages();
-  }
-
-  storeMessages() {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
 
-    console.log('Storing messages to Firebase:', this.messages);
-    this.http.put(this.firebaseUrl, this.messages, { headers }).subscribe(
-      () => {
-        console.log('Messages stored successfully');
+    this.http
+      .post<{ message: string; messageObject: MessageDto }>(
+        this.messagesUrl,
+        message,
+        { headers: headers },
+      )
+      .subscribe((responseData) => {
+        this.messages.unshift(this.toMessage(responseData.messageObject));
         this.messageChangedEvent.emit(this.messages.slice());
-        console.log('MessageChangedEvent emitted');
-      },
-      (error: any) => {
-        console.error('Error storing messages:', error);
-      },
-    );
+      });
+  }
+
+  private toMessage(message: MessageDto): Message {
+    let sender = '';
+
+    if (typeof message.sender === 'string') {
+      sender = message.sender;
+    } else if (message.sender && message.sender.id) {
+      sender = message.sender.id;
+    }
+
+    return new Message(message.id, message.subject, message.msgText, sender);
   }
 }
 

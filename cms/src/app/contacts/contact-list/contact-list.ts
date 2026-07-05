@@ -21,6 +21,7 @@ interface ContactSection {
 })
 export class ContactList implements OnInit, OnDestroy {
   contactSections: ContactSection[] = [];
+  standaloneContacts: Contact[] = [];
   subscription!: Subscription;
   term: string = '';
 
@@ -33,6 +34,12 @@ export class ContactList implements OnInit, OnDestroy {
       (updatedContacts: Contact[]) => {
         console.log('ContactListChangedEvent received with contacts:', updatedContacts);
         console.log('Building new sections from updated contacts');
+        this.standaloneContacts = updatedContacts
+          .filter(
+            (contact: Contact) =>
+              !Array.isArray(contact.group) || contact.group.length === 0,
+          )
+          .sort((a: Contact, b: Contact) => a.name.localeCompare(b.name));
         this.contactSections = this.buildSections(updatedContacts);
         console.log('Sections updated:', this.contactSections);
       },

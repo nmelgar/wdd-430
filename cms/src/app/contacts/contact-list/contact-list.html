@@ -21,6 +21,16 @@
   </div>
 
   <div class="panel-body">
+    <div class="contact-section" *ngIf="standaloneContacts.length > 0">
+      <div class="course-divider">All Contacts</div>
+      <div class="list-group">
+        <cms-contact-item
+          *ngFor="let contact of (standaloneContacts | contactsFilter: term)"
+          [contact]="contact"
+        ></cms-contact-item>
+      </div>
+    </div>
+
     <div *ngFor="let section of contactSections" class="contact-section">
       <div class="course-divider">{{ section.title }}</div>
       <div class="list-group">
