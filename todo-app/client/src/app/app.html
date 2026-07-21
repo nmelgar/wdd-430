@@ -1,0 +1,70 @@
+<main class="todo-shell">
+  <section class="todo-card">
+    <header class="todo-header">
+      <h1>Todo List</h1>
+      <p>WDD 430 Final Project</p>
+    </header>
+
+    <form class="todo-form" (ngSubmit)="submitTodo()">
+      <label>
+        Title
+        <input
+          type="text"
+          name="title"
+          [(ngModel)]="form.title"
+          placeholder="Ex: Finish Week 12 assignment"
+          required
+        />
+      </label>
+
+      <label>
+        Description
+        <textarea
+          name="description"
+          [(ngModel)]="form.description"
+          placeholder="Add details (optional)"
+          rows="3"
+        ></textarea>
+      </label>
+
+      <div class="form-actions">
+        <button type="submit">
+          {{ editingTodoId ? 'Update Todo' : 'Add Todo' }}
+        </button>
+        <button
+          type="button"
+          class="secondary"
+          *ngIf="editingTodoId"
+          (click)="cancelEdit()"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="status" *ngIf="loading">Loading todos...</p>
+
+    <ul class="todo-list" *ngIf="!loading">
+      <li *ngFor="let todo of todos" [class.done]="todo.completed">
+        <div class="todo-info">
+          <h3>{{ todo.title }}</h3>
+          <p>{{ todo.description || 'No description' }}</p>
+          <small>Updated: {{ todo.updatedAt | date: 'medium' }}</small>
+        </div>
+
+        <div class="todo-actions">
+          <button type="button" class="secondary" (click)="toggleCompleted(todo)">
+            {{ todo.completed ? 'Mark Pending' : 'Mark Done' }}
+          </button>
+          <button type="button" class="secondary" (click)="editTodo(todo)">
+            Edit
+          </button>
+          <button type="button" class="danger" (click)="deleteTodo(todo._id)">
+            Delete
+          </button>
+        </div>
+      </li>
+    </ul>
+  </section>
+</main>
